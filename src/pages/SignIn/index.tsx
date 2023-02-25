@@ -10,7 +10,8 @@ import {
     Checkbox,
     Button,
     Grid,
-    CircularProgress
+    CircularProgress,
+    Alert
 } from '@mui/material'
 import { Link } from 'react-router-dom';
 import Copyright from '../../components/CopyrightComp'
@@ -24,6 +25,7 @@ interface infoData {
 const SignIn = () => {
     const [ login, setLogin ] = useState<boolean>(false);
     const infoPattern = {email: 'monathcorey@gmail.com', password: '123'};
+    const [ user, setUser ] = useState<infoData>();
     const navigate = useNavigate();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,6 +36,7 @@ const SignIn = () => {
             password: data.get('password')
         }
         isLogin(info);
+        setUser(info);
     }
 
     const isLogin = useCallback((data: infoData) => {
@@ -43,10 +46,14 @@ const SignIn = () => {
                 navigate('/check-out');
             }, 1500);
             return () => clearInterval(interval);
-        } else {
-            alert('Login Faild');
-        }
+        } else {}
     }, [])
+
+    const isLoginFaild = () => {
+        if (!login && user) {
+            return <Alert severity="error">Login Faild. Try to do it.</Alert>;
+        } else { return; }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -60,6 +67,7 @@ const SignIn = () => {
                 }}
             >
                 <AuthComp pageName="Sign In" />
+                {isLoginFaild()}
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
